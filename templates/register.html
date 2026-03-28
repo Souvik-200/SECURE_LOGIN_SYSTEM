@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Register — Secure Login{% endblock %}
+{% block content %}
+<section class="card narrow">
+  <h1>Create account</h1>
+  <p class="subtle">Server-side validation, bcrypt hashing, and optional admin registration (see README).</p>
+
+  <form method="post" class="stack" id="register-form" novalidate>
+    {{ form.hidden_tag() }}
+
+    <label class="field">
+      <span>Username</span>
+      {{ form.username(class="input", autocomplete="username", minlength="3", maxlength="80", required=true) }}
+      {% for e in form.username.errors %}<span class="error">{{ e }}</span>{% endfor %}
+    </label>
+
+    <label class="field">
+      <span>Email</span>
+      {{ form.email(class="input", autocomplete="email", type="email", required=true) }}
+      {% for e in form.email.errors %}<span class="error">{{ e }}</span>{% endfor %}
+    </label>
+
+    <label class="field">
+      <span>Password</span>
+      {{ form.password(class="input", autocomplete="new-password", minlength="8", maxlength="128", required=true) }}
+      <small class="hint">8+ chars, upper, lower, number, special character.</small>
+      {% for e in form.password.errors %}<span class="error">{{ e }}</span>{% endfor %}
+    </label>
+
+    <label class="field">
+      <span>Confirm password</span>
+      {{ form.confirm_password(class="input", autocomplete="new-password", required=true) }}
+      {% for e in form.confirm_password.errors %}<span class="error">{{ e }}</span>{% endfor %}
+    </label>
+
+    <label class="field">
+      <span>Role</span>
+      {{ form.role(class="input select", id="role-select") }}
+      {% for e in form.role.errors %}<span class="error">{{ e }}</span>{% endfor %}
+      <small class="hint" id="role-hint">New accounts default to User unless ALLOW_PUBLIC_ADMIN_REGISTRATION is enabled.</small>
+    </label>
+
+    <div class="captcha-box">
+      <p class="captcha-question">{{ captcha_question }}</p>
+      <label class="field">
+        <span>Your answer</span>
+        {{ form.captcha_answer(class="input", inputmode="numeric", pattern="[0-9]*", autocomplete="off", required=true) }}
+        {% for e in form.captcha_answer.errors %}<span class="error">{{ e }}</span>{% endfor %}
+      </label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+  </form>
+  <p class="subtle foot-link">Already registered? <a href="{{ url_for('auth.login_page') }}">Sign in</a></p>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/validation.js') }}" defer></script>
+{% endblock %}

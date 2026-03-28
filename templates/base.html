@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Secure Login{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="{{ url_for('main.index') }}">SecureAuth</a>
+      <nav class="nav">
+        {% block nav %}
+          <a href="{{ url_for('auth.login_page') }}">Login</a>
+          <a href="{{ url_for('auth.register_page') }}">Register</a>
+        {% endblock %}
+      </nav>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, message in messages %}
+            <li class="flash flash-{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container subtle">
+      Session tokens use signed httpOnly cookies. Enable HTTPS and strong secrets in production.
+    </div>
+  </footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

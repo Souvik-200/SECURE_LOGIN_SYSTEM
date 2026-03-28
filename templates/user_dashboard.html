@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}My dashboard{% endblock %}
+{% block nav %}
+  <span class="nav-user">Hi, {{ user.username }}</span>
+  <a href="{{ url_for('auth.logout') }}">Logout</a>
+{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>User dashboard</h1>
+  <p class="subtle">You are signed in as a standard user. Admin tools are not available.</p>
+  <dl class="kv">
+    <dt>Username</dt><dd>{{ user.username }}</dd>
+    <dt>Email</dt><dd>{{ user.email }}</dd>
+    <dt>Role</dt><dd>{{ user.role }}</dd>
+    <dt>Member since</dt><dd>{{ user.created_at.strftime('%Y-%m-%d %H:%M UTC') if user.created_at else '—' }}</dd>
+  </dl>
+</section>
+{% endblock %}

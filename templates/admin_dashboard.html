@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Admin — User management{% endblock %}
+{% block nav %}
+  <span class="nav-user">Admin</span>
+  <a href="{{ url_for('main.index') }}">Home</a>
+  <a href="{{ url_for('auth.logout') }}">Logout</a>
+{% endblock %}
+{% block content %}
+<section class="card wide">
+  <h1>Admin dashboard</h1>
+  <p class="subtle">Manage users, roles, and active status. Actions require CSRF-protected POST.</p>
+
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Active</th>
+          <th>Failed logins</th>
+          <th>Locked until</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr class="{% if not u.is_active %}row-muted{% endif %}">
+          <td>{{ u.id }}</td>
+          <td>{{ u.username }}{% if u.id == current_uid %} <em>(you)</em>{% endif %}</td>
+          <td>{{ u.email }}</td>
+          <td><span class="pill pill-{{ u.role }}">{{ u.role }}</span></td>
+          <td>{{ u.is_active }}</td>
+          <td>{{ u.failed_login_attempts }}</td>
+          <td>{{ u.locked_until.strftime('%Y-%m-%d %H:%M') if u.locked_until else '—' }}</td>
+          <td class="actions">
+            {% if u.id != current_uid %}
+            <form method="post" action="{{ url_for('admin.toggle_active', target_id=u.id) }}" class="inline">
+              {{ action_form.hidden_tag() }}
+              <button type="submit" class="btn btn-sm">{% if u.is_active %}Deactivate{% else %}Activate{% endif %}</button>
+            </form>
+            <form method="post" action="{{ url_for('admin.set_role', target_id=u.id) }}" class="inline">
+              {{ action_form.hidden_tag() }}
+              <button type="submit" class="btn btn-sm btn-secondary">
+                {% if u.role == UserRole.ADMIN %}Demote to user{% else %}Promote to admin{% endif %}
+              </button>
+            </form>
+            {% else %}
+            <span class="subtle">—</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
