@@ -5,9 +5,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 from flask import Flask
 
-from config import Config
-
 load_dotenv()
+
+from config import Config
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 from app.extensions import csrf, db, jwt

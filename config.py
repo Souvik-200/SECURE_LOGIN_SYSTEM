@@ -10,7 +10,6 @@ class Config:
 
     BASE_DIR = Path(__file__).resolve().parent
     INSTANCE_DIR = BASE_DIR / "instance"
-    INSTANCE_DIR.mkdir(exist_ok=True)
 
     # SQLAlchemy — use DATABASE_URL; default SQLite (absolute path, Windows-safe)
     _sqlite_path = (INSTANCE_DIR / "app.db").resolve().as_posix()

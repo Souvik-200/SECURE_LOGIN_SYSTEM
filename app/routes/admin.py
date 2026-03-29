@@ -1,6 +1,7 @@
 """Admin-only RBAC: manage users."""
 from flask import Blueprint, abort, flash, redirect, render_template, url_for
 from flask_jwt_extended import get_jwt_identity
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.decorators import admin_required
 from app.extensions import db
@@ -40,8 +41,12 @@ def toggle_active(target_id: int):
     if not user:
         abort(404)
     user.is_active = not user.is_active
-    db.session.commit()
-    flash(f"User {user.username} active={user.is_active}.", "success")
+    try:
+        db.session.commit()
+        flash(f"User {user.username} active={user.is_active}.", "success")
+    except SQLAlchemyError:
+        db.session.rollback()
+        flash("Failed to update user status due to a database error.", "danger")
     return redirect(url_for("admin.dashboard"))
 
 
@@ -64,6 +69,10 @@ def set_role(target_id: int):
         flash("You cannot remove your own admin role.", "warning")
         return redirect(url_for("admin.dashboard"))
     user.role = new_role
-    db.session.commit()
-    flash(f"Role for {user.username} set to {new_role}.", "success")
+    try:
+        db.session.commit()
+        flash(f"Role for {user.username} set to {new_role}.", "success")
+    except SQLAlchemyError:
+        db.session.rollback()
+        flash("Failed to update user role due to a database error.", "danger")
     return redirect(url_for("admin.dashboard"))

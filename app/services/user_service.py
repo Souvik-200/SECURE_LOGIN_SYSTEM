@@ -2,6 +2,7 @@
 from datetime import datetime, timedelta, timezone
 
 from flask import current_app
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from app.extensions import db
 from app.models import User, UserRole
@@ -48,14 +49,24 @@ def register_user(
         role=role,
     )
     db.session.add(user)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        return None, "An account with this email or username already exists."
+    except SQLAlchemyError:
+        db.session.rollback()
+        return None, "Registration failed due to a database error. Please try again."
     return user, None
 
 
 def clear_lockout_on_success(user: User) -> None:
     user.failed_login_attempts = 0
     user.locked_until = None
-    db.session.commit()
+    try:
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
 
 
 def record_failed_login(user: User) -> str:
@@ -71,12 +82,18 @@ def record_failed_login(user: User) -> str:
     user.failed_login_attempts = (user.failed_login_attempts or 0) + 1
     if user.failed_login_attempts >= max_attempts:
         user.locked_until = datetime.now(timezone.utc) + timedelta(minutes=lock_minutes)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except SQLAlchemyError:
+            db.session.rollback()
         return (
             f"Too many failed attempts. Account locked for {lock_minutes} minutes."
         )
 
-    db.session.commit()
+    try:
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
     return "Invalid email or password."
 
 
