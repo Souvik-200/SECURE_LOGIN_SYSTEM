@@ -20,17 +20,17 @@ A production-minded demonstration of authenticated web sessions, **RBAC** (Admin
 
 ### 🔐 Signin Page
 <p align="center">
-   <img src="screenshots/sign_in.png" width="600"/>
+   <img src="docs/screenshots/sign_in.png" width="600"/>
 </p>
 
 ### 📝 Register Page
 <p align="center">
-   <img src="screenshots/register.png" width="600"/>
+   <img src="docs/screenshots/register.png" width="600"/>
 </p>
 
 ## 📊 Dashboard Preview
 <p align="center">
-  <img src="screenshots/Admin_dashboard.png" width="600"/>
+  <img src="docs/screenshots/Admin_dashboard.png" width="600"/>
 </p>
 
 ## Project layout
