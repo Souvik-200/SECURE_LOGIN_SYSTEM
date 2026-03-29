@@ -16,6 +16,23 @@ A production-minded demonstration of authenticated web sessions, **RBAC** (Admin
 | SQL injection mitigation | SQLAlchemy ORM exclusively (no string-concatenated SQL) |
 | CSRF | Flask-WTF on registration, login, and admin POST actions |
 
+## 📸 Screenshots
+
+### 🔐 Signin Page
+<p align="center">
+   <img src="screenshots/sign_in.png" width="600"/>
+</p>
+
+### 📝 Register Page
+<p align="center">
+   <img src="screenshots/register.png" width="600"/>
+</p>
+
+## 📊 Dashboard Preview
+<p align="center">
+  <img src="screenshots/Admin_dashboard.png" width="600"/>
+</p>
+
 ## Project layout
 
 ```
